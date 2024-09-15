@@ -32,6 +32,9 @@ class Figure:
     
     def get_canvas(self):
         return self.canvas
+    
+    def get_dimension(self):
+        return self.n
 
     def set_rows(self, rows):
         self.rows = rows
@@ -57,16 +60,27 @@ class Figure:
                     row[row.index(element)] = self.star #change?
         return list_of_rows       
                     
-    def get_points(self):
-        """Returns a list of the points as arrays. May contain duplicates"""
+    def get_points_list(self):
+        """Returns a list of the points as arrays, which may contain duplicates"""
         point_list = list()
         for row in self.rows:
             points = self.get_points_in_row(row)
             point_list += points
         return point_list
     
+    def get_points(self):
+        """Returns a list of the points as tuples, which does not contain duplicates."""
+        point_set = set()
+        
+        for row in self.rows:
+            for point in self.get_points_in_row(row):
+                point_set.add(tuple(point))
+        
+        l = list(point_set)
+        return l
+    
     def get_points_in_row(self, row):
-        """Returns the points that you get from one row."""
+        """Returns a list of the points that you get from one row."""
         # counting stars:
         number_of_stars = 0
         star_positions = list()
@@ -80,11 +94,11 @@ class Figure:
         if number_of_stars < 1:
             l = list()
             l.append(row)
-            
+    
         # turn the list points into arrays
         for listpointnum in range(len(l)):
             l[listpointnum] = np.array(l[listpointnum], dtype = float)
-
+    
         return l
     
     def h(self, listpoint, pos):
@@ -117,33 +131,21 @@ class Figure:
                 
         return l2
     
-    def draw_facet(self, row, color="black"):
-        """Draws the facet that you get from a row."""
-        text=''
-        
-        points = self.get_points_in_row(row)
+    def draw_facets(self, color="black"):
+        """Draws the edges of all facets"""
+        points = self.get_points()
         for p1 in points:
-            for p2 in points:
+            t = 0
+            for p2 in points[t:]:
                 if self.point_difference(p1, p2) == 1:
                     self.sys.draw_line(p1, p2, self.canvas,color=color)
-                    
-                    #tikz:
-                    np1 = self.sys.transform_point(p1)
-                    np2 = self.sys.transform_point(p2)
-                    linetxt = convertToTikz.make_line(np1, np2)
-                    text += linetxt
-        return text
-        
+    
     def draw_figure(self, color="black"):
         """Draws the figure in the coordinates system and the canvas."""
-        text = ''
         self.sys.draw_coordinate_system(self.canvas)
         for point in self.get_points():
             self.sys.draw_point(point, self.canvas, color)
-        for row in self.rows:
-            linetext = self.draw_facet(row, color)
-            text += linetext
-        return text
+        self.draw_facets(color)
     
     def point_difference(self, p1, p2):
         """Calculates how many indices are different in the two points."""
@@ -153,37 +155,4 @@ class Figure:
             if p1[r] != p2[r]:
                 difference_counter+=1
         return difference_counter
-    
-    def get_tikz(self):
-        text = '\\' + 'begin{center}\n\\' + 'begin{tikzpicture}[dot/.style={draw,fill,circle,inner sep=1pt},scale=4]\n%\n'
-         
-        text += self.sys.translate()
-        
-        text += '%\n%noder\n'
-        text += '\\' + 'begin{scope}[color=pptgrønn]\n'
-        
-        points = self.get_points()
-        for pointpos in range(len(points)):
-            points[pointpos] = self.sys.transform_point(points[pointpos])
-        text += convertToTikz.make_nodes(points)
-        
-        text += '%\n%kanter\n'
-        text += self.draw_figure("red")
-        
-        text += '\\' + 'end{scope}\n'
-        text += '%\n\end{tikzpicture}\n\end{center}\n'
-        
-        text += '\\' + 'vspace{1cm}\n'
-        
-        text += convertToTikz.write_matrix(self.rows)
-        
-        text += '\\' + 'newpage'
-        
-        return text
-    
-    
-    
-    
-    
-    
         

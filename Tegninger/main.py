@@ -5,7 +5,37 @@ from canvas import Canvas
 from coordinatesystem import CoordinateSystem
 from figure import Figure
 import test
+import fourvar
+import fivevar
 
+
+
+def draw_from_list(list_of_rows):
+    drawing_window = Window()
+    canvas = drawing_window.canvas
+    fig = Figure(list_of_rows, canvas)
+    fig.draw_figure("red")
+    code = convertToTikz.TikzCode(fig)
+    print(code.get_code())
+    drawing_window.run()
+
+def run_other_drawing_program():
+    
+    list_of_rows = [['*', 'a', 'a', '*', 'a'],
+                    ['a', 'a', '*', '*', 'a'],
+                    ['*', 'a', '*', 'a', 'a'],
+                    ['a', '*', '*', 'a', 'a'],
+                    ['a', '*', 'b', 'a', '*'],
+                    ['a', 'a', '*', 'a', '*']]
+    
+    drawing_window = Window()
+    canvas = drawing_window.canvas
+    fig = Figure(list_of_rows, canvas)
+    fig.draw_figure("red")
+    code = convertToTikz.TikzCode(fig)
+    print(code.get_code())
+    drawing_window.run()
+    
 
 def run_drawing_program():
     run_first_window()
@@ -61,12 +91,10 @@ def run_second_window(column_number, row_number):
         for j in range(int(row_number)): 
             for i in range(int(column_number)):
                 value = matrix.grid_slaves(row=j, column=i)[0].get()
-                # print(value)
                 entry_list.append(value)
                 
         row_list = turn_entry_list_into_list_of_rows(entry_list, column_number, row_number)
         second_window.destroy()
-        # convertToTikz.make_tikz_code(row_list)
         make_drawing(row_list)  
                
     printButton = tkinter.Button(second_window,text = "Enter", command = h)
@@ -79,8 +107,9 @@ def make_drawing(list_of_rows):
     drawing_window = Window()
     canvas = drawing_window.canvas
     fig = Figure(list_of_rows, canvas)
-    # fig.draw_figure("red")
-    print(fig.get_tikz())
+    fig.draw_figure("red")
+    code = convertToTikz.TikzCode(fig)
+    print(code.get_code())
     drawing_window.run()
 
 def turn_entry_list_into_list_of_rows(entry_list, column_number, row_number):
@@ -132,8 +161,10 @@ class Window:
 
 if __name__ == "__main__":
     # test.test_coordinate_system()
-    # test.test_figure_class()
-    run_drawing_program()
+    test.test_figure_class()
+    # run_drawing_program()
+    # draw_from_list(fivevar.list_of_rows18)
+    # run_other_drawing_program()
     
     
     

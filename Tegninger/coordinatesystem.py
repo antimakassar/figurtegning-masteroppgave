@@ -1,6 +1,7 @@
 import numpy as np
 import convertToTikz
 import tools
+import convertToTikz
 
 class CoordinateSystem:
     """This class implements a coordinate system of dimension d, which can be drawn (in a 2D space)."""
@@ -107,26 +108,3 @@ class CoordinateSystem:
     #     print(point)
     #     return point.transpose()
             
-    def translate(self):
-        """Returns the code for drawing the coordinate system with tikz."""
-        text = '%coordinate system\n' + '\\' + 'begin{scope}[->]\n'
-
-        for k in range(self.dim):
-            v = self.standard_vectors[k]
-            v[k] = 1.5
-            v2 = self.transform_point(v)
-            vtxt = convertToTikz.make_node(v2)
-            text += "\draw (0,0)--" + vtxt + ";\n"
-        text += '\\' + 'end{scope}\n'
-        
-        for k in range(self.dim):
-            v = self.standard_vectors[k]
-            v[k] = 1.5
-            v2 = self.transform_point(v)
-            vtxt = convertToTikz.make_node(v2)
-            text += '\\' + 'node[label=above:{$x_' + str(k + 1) + '$}] (k' + str(k) + ') at ' + vtxt + '{};\n'
-        return text
-    
-    
-    
-    

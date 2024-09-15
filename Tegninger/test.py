@@ -1,6 +1,7 @@
 from main import Window
 from figure import Figure
 from coordinatesystem import CoordinateSystem
+import convertToTikz
 
 def test_figure_class():
     drawing_window = Window()
@@ -13,8 +14,8 @@ def test_figure_class():
     print(fig.get_points())
     #
     fig.draw_figure(color="red")
-    
-    # print(fig.get_points_in_row([0,'*','*']))
+    code = convertToTikz.TikzCode(fig)
+    print(code.get_code())
     
     drawing_window.run()
     return ''
