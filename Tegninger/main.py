@@ -161,8 +161,8 @@ class Window:
 
 if __name__ == "__main__":
     # test.test_coordinate_system()
-    test.test_figure_class()
-    # run_drawing_program()
+    # test.test_figure_class()
+    run_drawing_program()
     # draw_from_list(fivevar.list_of_rows18)
     # run_other_drawing_program()
     
